@@ -14,6 +14,7 @@ import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { ListBooksQueryDto } from './dto/list-books-query.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('books') // todas las rutas de esta clase empiezan por /api/books
 export class BooksController {
@@ -38,6 +39,7 @@ export class BooksController {
   }
 
   @Post() // POST /api/books  → 201
+  @Throttle({ default: { limit: 3, ttl: 60_000 } }) // aquí, solo 3 por minuto
   create(@Body() dto: CreateBookDto) {
     return this.booksService.create(dto);
   }
